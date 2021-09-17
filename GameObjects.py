@@ -32,7 +32,7 @@ class Tank(GameObject):
         CObj4.Tag = "Gun"
         self.ChildObjects = (CObj1,CObj2,CObj3,CObj4)
 class Tank(GameObject):
-    def __init__(self,tag = "Tank",RotSpeed = 0.2,speed = 2 ,Color = (64,64,64),Color2 = (0,255,0),scale = Types.Vector2(1,1),ReloadSpeed = 1):
+    def __init__(self,tag = "Tank",RotSpeed = 0.2,speed = 2 ,Color = (64,64,64),Color2 = (0,255,0),scale = Types.Vector2(1,1),ReloadSpeed = 1, Ai = None, AttackDistance = 200):
         self.Tower = 3
         self.transform = Types.Transform(Types.Vector2(300,300),0,Types.Vector2(10,5)*scale)
         self.collider = Types.RectCollider(Types.MeshBox[0],Types.MeshBox[2],self)
@@ -42,6 +42,7 @@ class Tank(GameObject):
         self.Tag = tag
         self.IsShootReady = True
         self.ReloadSpeed = ReloadSpeed
+        self.ai = None if Ai == None else Types.Ai(Ai,self,AttackDistance)
         CObj1 = GameObject(transform=Types.Transform(Types.Vector2(-7,-4) * scale,0,Types.Vector2(3,1.5) * scale),
                            Mesh=Types.Mesh(Types.MeshBox,Color2))
         CObj2 = GameObject(transform=Types.Transform(Types.Vector2(-7,4)* scale, 0, Types.Vector2(3, 1.5)* scale),
@@ -53,7 +54,9 @@ class Tank(GameObject):
         CObj4.Tag = "Gun"
         self.ChildObjects = (CObj1,CObj2,CObj3,CObj4)
     def Do(self):
-        Controll.AiControllTank()
+        if self.ai != None:
+            self.ai.AiLookAt()
+            self.ai.AiMoveTo()
 class Bullet(GameObject):
     def __init__(self, tag="Bullet", speed=5, Color=(255, 0, 0),scale=Types.Vector2(1, 1)):
         self.transform = Types.Transform(Types.Vector2(300, 300), 0, Types.Vector2(3, 1) * scale)

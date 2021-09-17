@@ -62,7 +62,22 @@ class Vector2:
 MeshBox = (Vector2(-1,-1), Vector2(-1,1), Vector2(1,1), Vector2(1,-1))
 MeshGun = (Vector2(0,-1), Vector2(0,1), Vector2(2,1), Vector2(2,-1))
 MeshCircle = 1.0
-
+class Ai:
+    def __init__(self,Target,Me,MoveDistance = 200):
+        self.Target = Target
+        self.Myself = Me
+        self.MoveDistance = MoveDistance
+    def AiMoveTo(self):
+        Target = self.Target
+        obj = self.Myself
+        if (Vector2.Distance(Target.transform.position, obj.transform.position) > self.MoveDistance):
+            To = Target.transform.position - obj.transform.position
+            obj.transform.position += To * Vector2(obj.speed,obj.speed)
+            obj.transform.rotation = Vector2.LookAt(obj.transform.position, Target.transform.position)
+    def AiLookAt(self):
+        Target = self.Target
+        obj = self.Myself
+        obj.ChildObjects[obj.Tower].transform.rotation = Vector2.LookAt(obj.transform.position, Target.transform.position)
 class Transform:
     def __init__(self,position,rotation,scale):
         self.position = position

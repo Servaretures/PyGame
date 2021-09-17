@@ -9,13 +9,12 @@ import Draw
 import  Controll
 
 NewGame = Window.window(600, 600)
-#trans = Types.Transform(Vector2(300,300),0,Vector2(20,20))
-#col = Types.RectCollider(Vector2(-20,-20), Vector2(20,20))
-#mesh = Types.Mesh(Types.MeshBox, Draw.RED)
-#obj = GameObject(trans,col,mesh)
 obj = GameObjects.Tank(scale=Vector2(2,2))
 NewGame.AddObject(obj)
 
+TestBot = GameObjects.Tank(scale=Vector2(2,2), Color2 = (255,0,0),Ai = obj, speed= 0.003, AttackDistance=300)
+TestBot.transform.position = Vector2(100,100)
+NewGame.AddObject(TestBot)
 
 while(True):
     NewGame.Update()
