@@ -24,7 +24,10 @@ class Vector2:
         x = math.cos(transform.rotation)
         y = math.sin(transform.rotation)
         return Vector2(x,y)
-
+    @staticmethod
+    def LookAt(objPos, Target):
+        Vector = Vector2(Target.x - objPos.x,Target.y-objPos.y)
+        return math.atan2(Vector.y,Vector.x)
 
     @staticmethod
     def LocalToGloablPoint(Point, Origin, Child=None):
