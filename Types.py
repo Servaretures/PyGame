@@ -1,5 +1,6 @@
 import math
 import time
+import threading
 def ShootColdDown(Time,gameObject):
     gameObject.IsShootReady = False
     time.sleep(Time)
@@ -63,10 +64,12 @@ MeshBox = (Vector2(-1,-1), Vector2(-1,1), Vector2(1,1), Vector2(1,-1))
 MeshGun = (Vector2(0,-1), Vector2(0,1), Vector2(2,1), Vector2(2,-1))
 MeshCircle = 1.0
 class Ai:
-    def __init__(self,Target,Me,MoveDistance = 200):
+    def __init__(self,Target,Me,Bullet,MoveDistance = 200, ShootDistance = 300):
         self.Target = Target
         self.Myself = Me
         self.MoveDistance = MoveDistance
+        self.ShootDistance = ShootDistance
+        self.Bullet = Bullet
     def AiMoveTo(self):
         Target = self.Target
         obj = self.Myself
@@ -78,6 +81,17 @@ class Ai:
         Target = self.Target
         obj = self.Myself
         obj.ChildObjects[obj.Tower].transform.rotation = Vector2.LookAt(obj.transform.position, Target.transform.position)
+    def Shoot(self,window):
+        if(self.Myself.IsShootReady and Vector2.Distance(self.Myself.transform.position,self.Target.transform.position) < self.ShootDistance):
+            obj = self.Myself
+            bul = self.Bullet()
+            bul.transform.position = obj.ChildObjects[obj.Tower].transform.GlobalPos(obj)
+            bul.transform.rotation = obj.ChildObjects[obj.Tower].transform.rotation
+            bul.transform.position += Vector2.Forward(bul.transform) * Vector2(25, 25)
+            window.AddObject(bul)
+            self.Myself.IsShootReady = False
+            ColdDown_thread = threading.Thread(target=ShootColdDown, args=(obj.ReloadSpeed, obj))
+            ColdDown_thread.start()
 class Transform:
     def __init__(self,position,rotation,scale):
         self.position = position

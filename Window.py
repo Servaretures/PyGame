@@ -24,7 +24,7 @@ class window:
         self.GameObjects.remove(GameObject)
     def ObjectsDo(self):
         for obj in self.GameObjects:
-            obj.Do()
+            obj.Do(self)
             pos = obj.transform.position
             if(pos.x < -self.DeleteBorder or pos.x > self.BorderX + self.DeleteBorder or
             pos.y < -self.DeleteBorder or pos.y > self.BorderY + self.DeleteBorder):
