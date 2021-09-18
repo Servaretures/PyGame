@@ -4,15 +4,16 @@ import GameObjects
 import pygame
 import Types
 
-def KeyboardControl(gameObject):
+def KeyboardControl(gameObject, window):
     k = pygame.key.get_pressed()
-    k = pygame.key.get_pressed()
-    if (k[pygame.K_w]):
-        gameObject.transform.position = gameObject.transform.position + Types.Vector2.Forward(
+    w = gameObject.transform.position + Types.Vector2.Forward(
+        gameObject.transform) * Types.Vector2(gameObject.speed, gameObject.speed)
+    s = gameObject.transform.position - Types.Vector2.Forward(
             gameObject.transform) * Types.Vector2(gameObject.speed, gameObject.speed)
-    elif (k[pygame.K_s]):
-        gameObject.transform.position = gameObject.transform.position - Types.Vector2.Forward(
-            gameObject.transform) * Types.Vector2(gameObject.speed, gameObject.speed)
+    if (k[pygame.K_w] and (w.x > 0 and w.y > 0 and w.x < window.BorderX and w.y < window.BorderY)):
+        gameObject.transform.position = w
+    elif (k[pygame.K_s] and (s.x > 0 and s.y > 0 and s.x < window.BorderX and s.y < window.BorderY)):
+        gameObject.transform.position = s
     if (k[pygame.K_a]):
         gameObject.transform.rotation -= gameObject.RotSpeed
     elif (k[pygame.K_d]):
@@ -44,7 +45,7 @@ def ShootControll(obj, window):
         ColdDown_thread.start()
         pass
 def AllControll(obj,window):
-    KeyboardControl(obj)
+    KeyboardControl(obj,window)
     MouseControll(obj)
     ShootControll(obj,window)
 def AiControllTank(obj,Target):

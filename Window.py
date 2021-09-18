@@ -26,6 +26,6 @@ class window:
         for obj in self.GameObjects:
             obj.Do(self)
             pos = obj.transform.position
-            if(pos.x < -self.DeleteBorder or pos.x > self.BorderX + self.DeleteBorder or
-            pos.y < -self.DeleteBorder or pos.y > self.BorderY + self.DeleteBorder):
+            if((pos.x < -self.DeleteBorder or pos.x > self.BorderX + self.DeleteBorder or
+            pos.y < -self.DeleteBorder or pos.y > self.BorderY + self.DeleteBorder) and obj.Tag != "Hero"):
                 self.DeleteObject(obj)
