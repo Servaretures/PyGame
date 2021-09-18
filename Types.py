@@ -5,6 +5,20 @@ def ShootColdDown(Time,gameObject):
     gameObject.IsShootReady = False
     time.sleep(Time)
     gameObject.IsShootReady = True
+def BlowUp(gameObject):
+
+    TimeTolIve = gameObject.Time
+    FullScale = gameObject.transform.scale.x
+    while(gameObject.Time > 0):
+        gameObject.Time -= 0.1
+        Calc = TimeTolIve/2
+        if(gameObject.Time > Calc):
+           EndSize = FullScale*(1-(gameObject.Time - Calc)/(TimeTolIve-Calc))
+        else:
+           EndSize = (FullScale * ((gameObject.Time) / (TimeTolIve - Calc)))
+        gameObject.transform.scale = Vector2(EndSize,EndSize)
+        time.sleep(0.1)
+
 class Vector2:
     def __init__(self,x,y):
         self.x = x
@@ -17,6 +31,8 @@ class Vector2:
         return Vector2(self.x - other.x, self.y - other.y)
     def __mul__(self, other):
         return Vector2(self.x * other.x, self.y * other.y)
+    def __truediv__(self, other):
+        return Vector2(self.x / other.x, self.y / other.y)
     @staticmethod
     def Distance(Point1,Point2):
         return math.sqrt((Point2.x-Point1.x)**2 + (Point2.y - Point1.y)**2)
