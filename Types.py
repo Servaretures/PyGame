@@ -19,7 +19,7 @@ class Vector2:
         return Vector2(self.x * other.x, self.y * other.y)
     @staticmethod
     def Distance(Point1,Point2):
-        return math.sqrt( (Point2.x-Point1.x)**2 + (Point2.y - Point1.y)**2 )
+        return math.sqrt((Point2.x-Point1.x)**2 + (Point2.y - Point1.y)**2)
     @staticmethod
     def Forward(transform):
         x = math.cos(transform.rotation)
@@ -44,9 +44,7 @@ class Vector2:
         return ret
 
     @staticmethod
-    def LocalToGloabl(Points, Origin, Child = None):
-        if(Child == None):
-            Child = Vector2(0,0)
+    def LocalToGloabl(Points, Origin):
         ret = []
         for Point in Points.vertexes:
             B = Point*Origin.transform.scale
@@ -58,7 +56,21 @@ class Vector2:
             rotatedY = math.sin(Angle) * relativeX + math.cos(Angle) * relativeY
             ret += [rotatedX,rotatedY]
         return ret
-
+    @staticmethod
+    def Rotate(Angule,Points,Pos = [0,0]):
+        ret = []
+        if(type(Pos) != Vector2):
+            Pos = Vector2(Pos[0],Pos[1])
+        for Point in Points:
+            B = Point
+            A = Pos
+            relativeX = B.x - A.x
+            relativeY = B.y - A.y
+            Angle = Angule
+            rotatedX = math.cos(Angle) * relativeX - math.sin(Angle) * relativeY
+            rotatedY = math.sin(Angle) * relativeX + math.cos(Angle) * relativeY
+            ret += [Vector2(rotatedX, rotatedY)]
+        return ret
 
 MeshBox = (Vector2(-1,-1), Vector2(-1,1), Vector2(1,1), Vector2(1,-1))
 MeshGun = (Vector2(0,-1), Vector2(0,1), Vector2(2,1), Vector2(2,-1))
@@ -115,12 +127,11 @@ class CircleCollider(Collider):
         self.map = {
             CircleCollider: self.InsideCircle,
             RectCollider: self.InsdieRect,
-            PointCollider: self.InsidePoint
         }
     def InsideCircle(self, other):
-        pass
-    def InsidePoint(self, other):
-        pass
+        if(Vector2.Distance(self.parent.transform.position,other.parent.transform.position) > self.R + other.R):
+            return False
+        return True
     def InsdieRect(self, other):
         pass
 
@@ -132,37 +143,49 @@ class RectCollider(Collider):
         self.map = {
             CircleCollider: self.InsideCircle,
             RectCollider: self.InsdieRect,
-            PointCollider: self.InsidePoint
         }
     def InsideCircle(self, other):
         pass
-    def InsidePoint(self, other):
-        pass
     def InsdieRect(self, other):
-        pass
+        if (Vector2.Distance(Vector2(0,0), self.LeftUpperPoint) > Vector2.Distance(Vector2(0,0), self.RightBottomPoint)):
+            p1 = Vector2.Distance(Vector2(0,0), self.LeftUpperPoint)
+        else:
+            p1 =Vector2.Distance(Vector2(0,0), self.RightBottomPoint)
+
+        if (Vector2.Distance(Vector2(0,0), other.LeftUpperPoint) > Vector2.Distance(Vector2(0,0), other.RightBottomPoint)):
+            p2 = Vector2.Distance(Vector2(0,0), other.LeftUpperPoint)
+        else:
+            p2 = Vector2.Distance(Vector2(0,0), other.RightBottomPoint)
+
+        if(Vector2.Distance(self.parent.transform.position,other.parent.transform.position) > p1 + p2):
+            return False
+
+
+        pos = self.parent.transform.position
+        mesh1 = [self.LeftUpperPoint,self.RightBottomPoint]
+
+        pos2 = other.parent.transform.position
+        mesh2 = [other.LeftUpperPoint, other.RightBottomPoint]
+
+        mesh1 = Vector2.Rotate(self.parent.transform.rotation, mesh1)
+        mesh1 = [mesh1[0] +pos, mesh1[1] + pos]
+
+        mesh2 = Vector2.Rotate(other.parent.transform.rotation, mesh2)
+        mesh2 = [mesh2[0] + pos2, mesh2[1] + pos2]
+
+        mesh1 = Vector2.Rotate(-self.parent.transform.rotation, mesh1,pos)
+        mesh2 = Vector2.Rotate(-self.parent.transform.rotation, mesh2,pos)
+
+        mesh2 = [mesh2[0] + pos, mesh2[1] + pos]
+        mesh1 = [mesh1[0] + pos, mesh1[1] + pos]
 
 
 
-class PointCollider(Collider):
-    def __init__(self, parent = None):
-        self.parent = parent
-        self.map = {
-            CircleCollider: self.InsideCircle,
-            RectCollider: self.InsdieRect,
-            PointCollider: self.InsidePoint
-        }
-    def InsideCircle(self, other):
-        return True if Vector2.Distance(self.parent.transform.position,other.parent.transform.position) < other.R else False
-    def InsidePoint(self, other):
-        return True if self.parent.transform.position == other.parent.transform.position else False
-    def InsdieRect(self, other):
-        #if(Vector2.Distance(self.parent.transform.position,other.parent.transform.position) > other.LeftUpperPoint.x - other.LeftUpperPoint.y):
-            #return False
-        B = self.parent.transform.position
-        A = other.parent.transform.position
-        relativeX = B.x - A.x
-        relativeY = B.y - A.y
-        Angle = other.parent.transform.rotation
-        rotatedX = math.cos(Angle) * relativeX - math.sin(Angle) * relativeY
-        rotatedY = math.sin(Angle) * relativeX + math.cos(Angle) * relativeY
+        if(mesh2[0].x > mesh1[0].x and mesh2[0].y > mesh1[0].y and mesh2[0].x < mesh1[1].x and mesh2[0].y < mesh1[1].y):
+            return True
+        if (mesh2[1].x > mesh1[0].x and mesh2[1].y > mesh1[0].y and mesh2[1].x < mesh1[1].x and mesh2[1].y < mesh1[1].y):
+            return True
         return False
+
+
+

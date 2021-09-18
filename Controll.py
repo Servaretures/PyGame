@@ -3,6 +3,7 @@ import threading
 import GameObjects
 import pygame
 import Types
+import time
 
 def KeyboardControl(gameObject, window):
     k = pygame.key.get_pressed()
@@ -13,6 +14,7 @@ def KeyboardControl(gameObject, window):
     if (k[pygame.K_w] and (w.x > 0 and w.y > 0 and w.x < window.BorderX and w.y < window.BorderY)):
         gameObject.transform.position = w
     elif (k[pygame.K_s] and (s.x > 0 and s.y > 0 and s.x < window.BorderX and s.y < window.BorderY)):
+        #time.sleep(100000)
         gameObject.transform.position = s
     if (k[pygame.K_a]):
         gameObject.transform.rotation -= gameObject.RotSpeed
@@ -53,4 +55,3 @@ def AiControllTank(obj,Target):
         To = Target - obj.transform.position
         obj.transform.position += To * Types.Vector2(obj.speed)
         obj.transform.rotation = Types.Vector2.LookAt(obj.transform.position,Target)
-    pass

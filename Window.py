@@ -29,3 +29,9 @@ class window:
             if((pos.x < -self.DeleteBorder or pos.x > self.BorderX + self.DeleteBorder or
             pos.y < -self.DeleteBorder or pos.y > self.BorderY + self.DeleteBorder) and obj.Tag != "Hero"):
                 self.DeleteObject(obj)
+    def UpdateCollider(self):
+        for x in self.GameObjects:
+            for y in self.GameObjects:
+                if(y != x and x.collider != None and y.collider != None and x.collider.isCollide(y.collider) and (x.Tag == "Bullet" or y.Tag == "Bullet")):
+                    self.DeleteObject(x)
+                    self.DeleteObject(y)

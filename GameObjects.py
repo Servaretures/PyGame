@@ -15,7 +15,7 @@ class Tank(GameObject):
     def __init__(self,tag = "Tank",RotSpeed = 0.2,speed = 2 ,Color = (64,64,64),Color2 = (0,255,0),scale = Types.Vector2(1,1),ReloadSpeed = 1, Ai = None, AttackDistance = 200):
         self.Tower = 3
         self.transform = Types.Transform(Types.Vector2(300,300),0,Types.Vector2(10,5)*scale)
-        self.collider = Types.RectCollider(Types.MeshBox[0],Types.MeshBox[2],self)
+        self.collider = Types.RectCollider(Types.MeshBox[0]*self.transform.scale,Types.MeshBox[2]*self.transform.scale,self)
         self.mesh = Types.Mesh(Types.MeshBox,Color)
         self.speed = speed
         self.RotSpeed = RotSpeed
@@ -41,7 +41,7 @@ class Tank(GameObject):
 class Bullet(GameObject):
     def __init__(self, tag="Bullet", speed=5, Color=(255, 0, 0),scale=Types.Vector2(1, 1)):
         self.transform = Types.Transform(Types.Vector2(300, 300), 0, Types.Vector2(3, 1) * scale)
-        self.collider = Types.RectCollider(Types.MeshBox[0], Types.MeshBox[2], self)
+        self.collider = Types.RectCollider(Types.MeshBox[0]*scale,Types.MeshBox[2]*scale,self)
         self.mesh = Types.Mesh(Types.MeshBox, Color)
         self.speed = speed
         self.Tag = tag
