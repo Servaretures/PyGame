@@ -42,8 +42,9 @@ def ShootControll(obj, window):
         bul.transform.position = obj.ChildObjects[obj.Tower].transform.GlobalPos(obj)
         bul.transform.rotation = obj.ChildObjects[obj.Tower].transform.rotation
         bul.transform.position += Types.Vector2.Forward(bul.transform) * Types.Vector2(25,25)
+        bul.mesh.color = (0,255,0)
         window.AddObject(bul)
-        ColdDown_thread = threading.Thread(target=Types.ShootColdDown, args=(obj.ReloadSpeed,obj))
+        ColdDown_thread = threading.Thread(target=Types.ShootColdDown, args=(obj.ReloadSpeed,obj),daemon=True)
         ColdDown_thread.start()
         pass
 def AllControll(obj,window):

@@ -21,8 +21,12 @@ def Draw(Surface,pos,Mesh,color,child = Types.Vector2(0,0)):
 def DrawCircle(Surface,Transform,Mesh,color):
     pygame.draw.circle(Surface,color,Transform,Mesh)
 
-def DrawObjects(Surface,GameObjects):
+def DrawObjects(Window,GameObjects):
+    Surface = Window.Surfuse
     for gameObject in GameObjects:
+        if(gameObject.transform.position.x < 0 or gameObject.transform.position.y < 0 or gameObject.transform.position.y > Window.BorderY or
+                gameObject.transform.position.x > Window.BorderX):
+            continue
         if (type(gameObject.mesh.vertexes) == float):
             DrawCircle(Surface,gameObject.transform.position.ToArray() , gameObject.mesh.vertexes * gameObject.transform.scale.x,gameObject.mesh.color)
         else:

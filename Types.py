@@ -19,6 +19,7 @@ def BlowUp(gameObject):
         gameObject.transform.scale = Vector2(EndSize,EndSize)
         time.sleep(0.1)
 
+
 class Vector2:
     def __init__(self,x,y):
         self.x = x
@@ -113,12 +114,13 @@ class Ai:
         if(self.Myself.IsShootReady and Vector2.Distance(self.Myself.transform.position,self.Target.transform.position) < self.ShootDistance):
             obj = self.Myself
             bul = self.Bullet()
+            bul.Tag = "EnBullet"
             bul.transform.position = obj.ChildObjects[obj.Tower].transform.GlobalPos(obj)
             bul.transform.rotation = obj.ChildObjects[obj.Tower].transform.rotation
             bul.transform.position += Vector2.Forward(bul.transform) * Vector2(25, 25)
             window.AddObject(bul)
             self.Myself.IsShootReady = False
-            ColdDown_thread = threading.Thread(target=ShootColdDown, args=(obj.ReloadSpeed, obj))
+            ColdDown_thread = threading.Thread(target=ShootColdDown, args=(obj.ReloadSpeed, obj),daemon=True)
             ColdDown_thread.start()
 class Transform:
     def __init__(self,position,rotation,scale):

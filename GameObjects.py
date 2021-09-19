@@ -13,7 +13,7 @@ class GameObject:
         pass
 
 class Tank(GameObject):
-    def __init__(self,tag = "Tank",RotSpeed = 0.2,speed = 2 ,Color = (64,64,64),Color2 = (65,105,225),scale = Types.Vector2(1,1),ReloadSpeed = 1, Ai = None, AttackDistance = 200):
+    def __init__(self,tag = "Tank",RotSpeed = 0.15,speed = 3 ,Color = (64,64,64),Color2 = (65,105,225),scale = Types.Vector2(1,1),ReloadSpeed = 1, Ai = None, AttackDistance = 200):
         self.Tower = 3
         self.transform = Types.Transform(Types.Vector2(300,300),0,Types.Vector2(10,5)*scale)
         self.collider = Types.RectCollider(Types.MeshBox[0]*self.transform.scale,Types.MeshBox[2]*self.transform.scale,self)
@@ -50,6 +50,7 @@ class Bullet(GameObject):
         self.transform.position += Types.Vector2.Forward(self.transform) * Types.Vector2(self.speed,self.speed)
 class Blow(GameObject):
     def __init__(self,scale = Types.Vector2(7,7),Color = (255,0,0),Color2 = (255,255,0),Time = 0.7):
+        self.Tag= "Blow"
         self.Time = Time
         self.transform = Types.Transform(Types.Vector2(300, 300), 0, Types.Vector2(2, 2) * scale)
         self.collider = None
@@ -60,7 +61,7 @@ class Blow(GameObject):
 
         self.ChildObjects = (CObj1,)
         self.MaxScale = [self.transform.scale, CObj1.transform.scale]
-        ColdDown_thread = threading.Thread(target=Types.BlowUp, args=(self,))
+        ColdDown_thread = threading.Thread(target=Types.BlowUp, args=(self,),daemon=True)
         ColdDown_thread.start()
 
     def Do(self,window = None):
