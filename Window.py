@@ -31,7 +31,6 @@ class window:
         Draw.DrawObjects(self,self.GameObjects)
         self.ShowScore()
         pygame.display.update()
-        print(self.clock.get_fps())
         self.clock.tick(self.FpsRate)
     def AddObject(self,GameObject):
         self.GameObjects.append(GameObject)
