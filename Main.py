@@ -1,5 +1,8 @@
 import pygame
 from pygame.locals import *
+from OpenGL.GL import *
+from OpenGL.GLUT import *
+from OpenGL.GLU import *
 import sys
 import Window
 from GameObjects import GameObject
@@ -31,7 +34,7 @@ def WaintAnswer():
 def Game():
 
     NewGame = Window.window(1000, 1000)
-    pygame.display.set_caption('ТАНК')
+    pygame.display.set_caption('Тahk')
     Icon = pygame.image.load('ico.png')
     pygame.display.set_icon(Icon)
 
@@ -51,7 +54,7 @@ def Game():
         Controll.AllControll(obj, NewGame)
         NewGame.ObjectsDo()
         if(c == 3):
-            NewGame.UpdateCollider()
+            #NewGame.UpdateCollider()
             c = 0
         c+=1
         if(GetAnswer() or NewGame.Score == 40):
@@ -76,7 +79,7 @@ while(True):
     text = f.render('Press R to restart', True,
                     (255, 0, 0))
     End.Surfuse.blit(text, (End.BorderX / 2-80, End.BorderY / 2+10))
-    pygame.display.update()
+    pygame.display.flip()
     if(WaintAnswer()):
         break
 

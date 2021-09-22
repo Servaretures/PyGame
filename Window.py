@@ -4,15 +4,22 @@ import GameObjects
 import Types
 import  time
 import  random
+from pygame.locals import *
+from OpenGL.GL import *
+from OpenGL.GLUT import *
+from OpenGL.GLU import *
+
 class window:
 
     def __init__(self, borderX = 600, borderY = 600, fpsRate = 60, DeleteBorder = 10,EnemySpawnTime = 5):
+
         pygame.init()
         pygame.font.init()
         self.DeleteBorder = DeleteBorder
-        self.Surfuse = pygame.display.set_mode((borderX, borderY))
+        self.Surfuse = pygame.display.set_mode((borderX, borderY),DOUBLEBUF|OPENGL)
+
         self.clock = pygame.time.Clock()
-        pygame.display.update()
+        pygame.display.flip()
         self.FpsRate = fpsRate
         self.BorderX = borderX
         self.BorderY = borderY
@@ -20,6 +27,7 @@ class window:
         self.Score = 0
         self.End = False
         self.EnemySpawnTime = EnemySpawnTime
+        self.refresh2d()
     def ShowScore(self):
         f = pygame.font.Font(None,36)
         text = f.render('Score:' + str(self.Score), True,
@@ -30,7 +38,7 @@ class window:
         self.Surfuse.fill(Draw.WHITE)
         Draw.DrawObjects(self,self.GameObjects)
         self.ShowScore()
-        pygame.display.update()
+        pygame.display.flip()
         self.clock.tick(self.FpsRate)
     def AddObject(self,GameObject):
         self.GameObjects.append(GameObject)
@@ -57,6 +65,14 @@ class window:
                     if(x.Tag == "Hero" or y.Tag == "Hero"):
                         self.End = True
 
+    def refresh2d(self):
+        glClearColor(0, 0, 0, 0)
+        glViewport(0, 0, self.BorderX, self.BorderY)
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        glOrtho(0.0, self.BorderX, 0.0, self.BorderY, 0.0, 1.0)
+        glMatrixMode(GL_MODELVIEW)
+        glLoadIdentity()
     def EnemySpawn(self,Hero,Destory):
         c = 1
         x = self.BorderX + self.DeleteBorder
@@ -64,7 +80,7 @@ class window:
         _xy = -self.DeleteBorder
         while True:
             #or c == 5
-            if(Destory() or c == 5):
+            if(Destory()):
                 break
             print(c)
             for t in range(0,c):

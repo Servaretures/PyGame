@@ -1,6 +1,10 @@
 import pygame
 import Types
 import copy
+from OpenGL.GL import *
+from OpenGL.GLUT import *
+from OpenGL.GLU import *
+import math
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (125, 125, 125)
@@ -16,13 +20,33 @@ def Draw(Surface,pos,Mesh,color,child = Types.Vector2(0,0)):
     for x in range(0, int(len(Mesh)/2)):
         d = x*2
         Rect += [[(Mesh[d] + pos.ToArray()[0]),(Mesh[d+1] + pos.ToArray()[1])]]
-    pygame.draw.polygon(Surface, color, Rect)
-    pygame.draw.aalines(Surface, color,True, Rect)
+    #wwpygame.draw.polygon(Surface, color, Rect)
+    #pygame.draw.aalines(Surface, color,True, Rect)
+    #OpenGl
+    glLoadIdentity()
+    glColor3f(color[0]/255, color[1]/255, color[2]/255)
+    glBegin(GL_POLYGON)  # start drawing a rectangle
+    glVertex2f(Rect[0][0], Rect[0][1])  # bottom left point
+    glVertex2f(Rect[1][0], Rect[1][1])  # bottom right point
+    glVertex2f(Rect[2][0], Rect[2][1])  # top right point
+    glVertex2f(Rect[3][0], Rect[3][1])  # top left point
+    glEnd()
+
+
 def DrawCircle(Surface,Transform,Mesh,color):
-    pygame.draw.circle(Surface,color,Transform,Mesh)
+    #pygame.draw.circle(Surface,color,Transform,Mesh)
+    glLoadIdentity()
+    glColor3f(color[0] / 255, color[1] / 255, color[2] / 255)
+    glBegin(GL_POLYGON)
+    for i in range(100):
+        cosine = Mesh * math.cos(i * 2 * math.pi / 32) + Transform[0]
+        sine = Mesh * math.sin(i * 2 * math.pi / 32) + Transform[1]
+        glVertex2f(cosine, sine)
+    glEnd()
 
 def DrawObjects(Window,GameObjects):
     Surface = Window.Surfuse
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     for gameObject in GameObjects:
         if(gameObject.transform.position.x < 0 or gameObject.transform.position.y < 0 or gameObject.transform.position.y > Window.BorderY or
                 gameObject.transform.position.x > Window.BorderX):

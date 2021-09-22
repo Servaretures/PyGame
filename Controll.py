@@ -17,9 +17,9 @@ def KeyboardControl(gameObject, window):
         #time.sleep(100000)
         gameObject.transform.position = s
     if (k[pygame.K_a]):
-        gameObject.transform.rotation -= gameObject.RotSpeed
-    elif (k[pygame.K_d]):
         gameObject.transform.rotation += gameObject.RotSpeed
+    elif (k[pygame.K_d]):
+        gameObject.transform.rotation -= gameObject.RotSpeed
 
 def KeyboardControll(gameObject, speed,RotSpeed):
     k = pygame.key.get_pressed()
@@ -32,10 +32,11 @@ def KeyboardControll(gameObject, speed,RotSpeed):
     if (k[pygame.K_d]):
         gameObject.transform.rotation += RotSpeed
 
-def MouseControll(obj):
+def MouseControll(obj,BorderY):
     pos = obj.ChildObjects[obj.Tower].transform.position + obj.transform.position
     Mouse = pygame.mouse.get_pos()
-    obj.ChildObjects[obj.Tower].transform.rotation = Types.Vector2.LookAt(pos,Types.Vector2(Mouse[0], Mouse[1]))
+    #print(Mouse, obj.transform.position.ToArray())
+    obj.ChildObjects[obj.Tower].transform.rotation = Types.Vector2.LookAt(pos,Types.Vector2(Mouse[0], BorderY - Mouse[1]))
 def ShootControll(obj, window):
     if(pygame.mouse.get_pressed()[0] and obj.IsShootReady):
         bul = GameObjects.Bullet()
@@ -49,7 +50,7 @@ def ShootControll(obj, window):
         pass
 def AllControll(obj,window):
     KeyboardControl(obj,window)
-    MouseControll(obj)
+    MouseControll(obj,window.BorderY)
     ShootControll(obj,window)
 def AiControllTank(obj,Target):
     if(Types.Vector2.Distance(Target,obj.transform.position) > 100):
